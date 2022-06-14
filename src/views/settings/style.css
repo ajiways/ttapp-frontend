@@ -1,0 +1,13 @@
+.tab-mt-45 {
+  margin-top: 45px;
+}
+
+.v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)
+  > .v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-slide-group--has-affixes)
+  .v-slide-group__prev {
+  display: none;
+}
+
+.v-data-table__wrapper {
+  margin-bottom: 30px;
+}

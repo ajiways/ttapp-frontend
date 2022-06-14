@@ -1,0 +1,54 @@
+.title {
+  text-align: center;
+}
+
+.week-day {
+  text-align: center;
+}
+
+.day-lessons {
+  max-height: 420px;
+  overflow: scroll !important;
+}
+
+.day-lessons::-webkit-scrollbar {
+  display: none;
+}
+
+.myContainer {
+  width: 100%;
+}
+
+.day-title {
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.space {
+  margin-bottom: 50px;
+}
+
+.no-schedule {
+  text-align: center;
+}
+
+.card-content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  font-size: 18px;
+}
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-additional {
+  display: flex;
+  justify-content: space-between;
+}
+
+.v-sheet.v-card:not(.v-sheet--outlined) {
+  box-shadow: none !important;
+}
