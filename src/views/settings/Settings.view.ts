@@ -15,7 +15,13 @@ import {
   TWeekListItem,
   WeekSchedule,
 } from "../schedule/types";
-import { getGroupSchedule, saveNewGroup, updateDayLessons } from "./query";
+import {
+  getGroupSchedule,
+  saveNewGroup,
+  updateDayLessons,
+  updateSelfGroup,
+  updateSelfPassword,
+} from "./query";
 
 let password: string;
 
@@ -58,12 +64,12 @@ export default class SettingsView extends Vue {
     return roles.map((role) => role.title);
   }
 
-  public saveUpdatedUserData() {
+  public async saveUpdatedUserData() {
     if (!this.$refs.userDataForm.validate()) {
       return;
     }
 
-    console.log("save");
+    await updateSelfPassword(this.oldPassword, this.newPassword);
   }
 
   public resetUserDataForm() {
@@ -80,28 +86,32 @@ export default class SettingsView extends Vue {
   public get getGroupList(): TWeekListItem[] {
     return store.getters.getGroupList;
   }
-  public currentUserGroupId = localStorage.getItem("groupId");
+  public get currentUserGroupId() {
+    return store.getters.getGroupId;
+  }
 
   public get userId() {
     return store.getters.getUserId;
   }
 
   public get getCurrentUserGroup() {
-    if (!this.currentUserGroupId) {
-      return "Не выбрана";
-    }
-
     return (
       this.getGroupList.find((group) => group.id === this.currentUserGroupId)
         ?.title || "Не выбрана"
     );
   }
-  public saveUserGroupData() {
+
+  public async saveUserGroupData() {
     if (!this.$refs.userGroupForm.validate()) {
       return;
     }
 
-    console.log("saved group");
+    const res = await updateSelfGroup(this.newSelectedGroupId);
+
+    if (res instanceof Error) return;
+
+    localStorage.setItem("groupId", this.newSelectedGroupId);
+    store.commit("setGroupId", this.newSelectedGroupId);
   }
 
   public resetUserGroupData() {
