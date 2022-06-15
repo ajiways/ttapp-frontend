@@ -1,8 +1,10 @@
 import { Component, Vue } from "vue-property-decorator";
+import { EResponseType } from "../../common/enums";
 import {
   loginRegex,
   passwordRegex,
   secondPasswordRegex,
+  useSnackbar,
 } from "../../common/utils";
 import router from "../../router";
 import { loginQuery } from "./query";
@@ -17,6 +19,10 @@ export default class LoginView extends Vue {
   public formValid = false;
   public login = "";
   public password = "";
+
+  public snackbarType: EResponseType | null = null;
+  public snackbarMessage: string | null = null;
+  public snackbar = false;
 
   public loginRules = [
     (v: string) =>
@@ -41,15 +47,23 @@ export default class LoginView extends Vue {
 
     const res = await loginQuery(this.login, this.password);
 
-    if (res instanceof Error) {
-      return;
-    }
+    const [type, message, show] = useSnackbar(res);
 
-    router.push("/");
+    this.snackbarType = type;
+    this.snackbarMessage = message;
+    this.snackbar = show;
+
+    if (type === EResponseType.SUCCESS) {
+      router.push("/");
+    }
   }
 
   public reset() {
     this.login = "";
     this.password = "";
+
+    this.snackbarType = EResponseType.SUCCESS;
+    this.snackbarMessage = "Успешно сброшено";
+    this.snackbar = true;
   }
 }

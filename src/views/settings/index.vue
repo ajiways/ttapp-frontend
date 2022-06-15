@@ -407,6 +407,16 @@
         </v-card>
       </v-tab-item>
     </v-tabs>
+
+    <v-snackbar v-model="snackbar">
+      {{ snackbarMessage }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+          Закрыть
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 

@@ -1,9 +1,11 @@
 import { Component, Vue } from "vue-property-decorator";
+import { EResponseType } from "../../common/enums";
 import {
   getCurrentWeekType,
   loginRegex,
   passwordRegex,
   secondPasswordRegex,
+  useSnackbar,
 } from "../../common/utils";
 import store from "../../store";
 import { getGroupScheduleQuery, groupListQuery } from "../schedule/query";
@@ -69,7 +71,13 @@ export default class SettingsView extends Vue {
       return;
     }
 
-    await updateSelfPassword(this.oldPassword, this.newPassword);
+    const res = await updateSelfPassword(this.oldPassword, this.newPassword);
+
+    const [type, message, show] = useSnackbar(res);
+
+    this.snackbarType = type;
+    this.snackbarMessage = message;
+    this.snackbar = show;
   }
 
   public resetUserDataForm() {
@@ -108,7 +116,11 @@ export default class SettingsView extends Vue {
 
     const res = await updateSelfGroup(this.newSelectedGroupId);
 
-    if (res instanceof Error) return;
+    const [type, message, show] = useSnackbar(res);
+
+    this.snackbarType = type;
+    this.snackbarMessage = message;
+    this.snackbar = show;
 
     localStorage.setItem("groupId", this.newSelectedGroupId);
     store.commit("setGroupId", this.newSelectedGroupId);
@@ -367,12 +379,13 @@ export default class SettingsView extends Vue {
       this.selectedDay.id
     );
 
-    if (res instanceof Error) {
-      console.log("error");
-      return;
-    }
+    const [type, message, show, arg] = useSnackbar(res, "updatedLessons");
 
-    this.selectedDayLessons = res;
+    this.snackbarType = type;
+    this.snackbarMessage = message;
+    this.snackbar = show;
+
+    this.selectedDayLessons = arg as LessonInterface[];
     if (this.selectedGroupSchedule.id === this.headmanGroupId) {
       await getGroupScheduleQuery(this.selectedGroupSchedule.id);
     }
@@ -382,6 +395,10 @@ export default class SettingsView extends Vue {
     this.saveUpdatedSchedule = false;
     this.deletedLessons = [];
     this.selectedDayLessons = this.selectedDay?.lessons.slice() || [];
+
+    this.snackbarType = EResponseType.SUCCESS;
+    this.snackbarMessage = "Успешно сброшено";
+    this.snackbar = true;
   }
 
   //ADMIN SETTINGS ========================================================
@@ -411,15 +428,25 @@ export default class SettingsView extends Vue {
       this.createGroupFormValid = false;
       return;
     }
-    await saveNewGroup(
+    const res = await saveNewGroup(
       this.newGroupTitle,
       this.newHeadmanLogin,
       this.newHeadmanPassword
     );
-    console.log("save");
+    const [type, message, show] = useSnackbar(res);
+
+    this.snackbarType = type;
+    this.snackbarMessage = message;
+    this.snackbar = show;
   }
 
   public resetNewGroup() {
     console.log("reset");
   }
+
+  // ADDITIONAL STUFF =======================================
+
+  public snackbarType: EResponseType | null = null;
+  public snackbarMessage: string | null = null;
+  public snackbar = false;
 }

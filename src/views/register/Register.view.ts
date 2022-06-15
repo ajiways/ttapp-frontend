@@ -1,8 +1,10 @@
 import { Component, Vue } from "vue-property-decorator";
+import { EResponseType } from "../../common/enums";
 import {
   loginRegex,
   passwordRegex,
   secondPasswordRegex,
+  useSnackbar,
 } from "../../common/utils";
 import store from "../../store";
 import { groupListQuery } from "../schedule/query";
@@ -29,6 +31,10 @@ export default class RegisterView extends Vue {
   public login = "";
   public password = "";
   public passwordConfirm = "";
+
+  public snackbarType: EResponseType | null = null;
+  public snackbarMessage: string | null = null;
+  public snackbar = false;
 
   public passwordKostyl() {
     password = this.password;
@@ -69,15 +75,25 @@ export default class RegisterView extends Vue {
       this.passwordConfirm,
       this.selectedGroup
     );
-    if (res instanceof Error) return;
 
-    this.$router.push("/");
+    const [type, message, show] = useSnackbar(res);
+
+    this.snackbarType = type;
+    this.snackbarMessage = message;
+    this.snackbar = show;
+
+    if (type === EResponseType.SUCCESS) {
+      this.$router.push("/");
+    }
   }
 
   public reset() {
     this.login = "";
     this.password = "";
     this.passwordConfirm = "";
+    this.snackbarType = EResponseType.SUCCESS;
+    this.snackbarMessage = "Успешно сброшено";
+    this.snackbar = true;
   }
 
   private async mounted() {
