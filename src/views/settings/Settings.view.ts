@@ -6,7 +6,7 @@ import {
   secondPasswordRegex,
 } from "../../common/utils";
 import store from "../../store";
-import { groupListQuery } from "../schedule/query";
+import { getGroupScheduleQuery, groupListQuery } from "../schedule/query";
 import {
   DaySchedule,
   ELessonType,
@@ -215,6 +215,10 @@ export default class SettingsView extends Vue {
     return this.selectedDay?.title || "Не выбран";
   }
 
+  public get selectedGroupSchedule() {
+    return store.getters.getSelectedGroupSchedule;
+  }
+
   public changeDay() {
     this.selectedDay =
       this.selectedWeek?.days.find(
@@ -338,7 +342,7 @@ export default class SettingsView extends Vue {
   public lessonDateRules = [
     ...this.defaultRules,
     (v: string) =>
-      v.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/) ||
+      !!v.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/) ||
       "Должно быть в формате ЧЧ:ММ",
   ];
 
@@ -369,6 +373,9 @@ export default class SettingsView extends Vue {
     }
 
     this.selectedDayLessons = res;
+    if (this.selectedGroupSchedule.id === this.headmanGroupId) {
+      await getGroupScheduleQuery(this.selectedGroupSchedule.id);
+    }
   }
 
   public resetGroupScheduleChanges() {
