@@ -1,4 +1,5 @@
 import { Component, Vue } from "vue-property-decorator";
+import { EResponseType } from "../../common/enums";
 import {
   loginRegex,
   passwordRegex,
@@ -29,6 +30,10 @@ export default class RegisterView extends Vue {
   public login = "";
   public password = "";
   public passwordConfirm = "";
+
+  public snackbarType: EResponseType | null = null;
+  public snackbarMessage: string | null = null;
+  public snackbar = false;
 
   public passwordKostyl() {
     password = this.password;
@@ -69,8 +74,24 @@ export default class RegisterView extends Vue {
       this.passwordConfirm,
       this.selectedGroup
     );
-    if (res instanceof Error) return;
 
+    if (!res) {
+      this.snackbarType = EResponseType.ERROR;
+      this.snackbarMessage = "Произошла непредвиденная ошибка";
+      this.snackbar = true;
+      return;
+    }
+
+    if (res.type === EResponseType.ERROR) {
+      this.snackbarType = EResponseType.ERROR;
+      this.snackbarMessage = res.message;
+      this.snackbar = true;
+      return;
+    }
+
+    this.snackbarType = EResponseType.SUCCESS;
+    this.snackbarMessage = res.message;
+    this.snackbar = true;
     this.$router.push("/");
   }
 

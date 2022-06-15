@@ -27,7 +27,7 @@
       {{ snackbarMessage }}
 
       <template v-slot:action="{ attrs }">
-        <v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
           Закрыть
         </v-btn>
       </template>

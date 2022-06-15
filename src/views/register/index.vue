@@ -48,6 +48,16 @@
 
       <v-btn color="error" class="mr-4" @click="reset"> Сбросить </v-btn>
     </v-form>
+
+    <v-snackbar v-model="snackbar">
+      {{ snackbarMessage }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+          Закрыть
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
