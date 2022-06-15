@@ -338,7 +338,7 @@ export default class SettingsView extends Vue {
   public lessonDateRules = [
     ...this.defaultRules,
     (v: string) =>
-      v.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/) ||
+      !!v.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/) ||
       "Должно быть в формате ЧЧ:ММ",
   ];
 
