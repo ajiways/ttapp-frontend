@@ -4,6 +4,7 @@ import {
   loginRegex,
   passwordRegex,
   secondPasswordRegex,
+  useSnackbar,
 } from "../../common/utils";
 import store from "../../store";
 import { groupListQuery } from "../schedule/query";
@@ -75,30 +76,24 @@ export default class RegisterView extends Vue {
       this.selectedGroup
     );
 
-    if (!res) {
-      this.snackbarType = EResponseType.ERROR;
-      this.snackbarMessage = "Произошла непредвиденная ошибка";
-      this.snackbar = true;
-      return;
-    }
+    const [type, message, show] = useSnackbar(res);
 
-    if (res.type === EResponseType.ERROR) {
-      this.snackbarType = EResponseType.ERROR;
-      this.snackbarMessage = res.message;
-      this.snackbar = true;
-      return;
-    }
+    this.snackbarType = type;
+    this.snackbarMessage = message;
+    this.snackbar = show;
 
-    this.snackbarType = EResponseType.SUCCESS;
-    this.snackbarMessage = res.message;
-    this.snackbar = true;
-    this.$router.push("/");
+    if (type === EResponseType.SUCCESS) {
+      this.$router.push("/");
+    }
   }
 
   public reset() {
     this.login = "";
     this.password = "";
     this.passwordConfirm = "";
+    this.snackbarType = EResponseType.SUCCESS;
+    this.snackbarMessage = "Успешно сброшено";
+    this.snackbar = true;
   }
 
   private async mounted() {

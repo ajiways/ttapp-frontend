@@ -4,6 +4,7 @@ import {
   loginRegex,
   passwordRegex,
   secondPasswordRegex,
+  useSnackbar,
 } from "../../common/utils";
 import router from "../../router";
 import { loginQuery } from "./query";
@@ -46,28 +47,23 @@ export default class LoginView extends Vue {
 
     const res = await loginQuery(this.login, this.password);
 
-    if (!res) {
-      this.snackbarType = EResponseType.ERROR;
-      this.snackbarMessage = "Произошла непредвиденная ошибка";
-      this.snackbar = true;
-      return;
-    }
+    const [type, message, show] = useSnackbar(res);
 
-    if (res.type === EResponseType.ERROR) {
-      this.snackbarType = EResponseType.ERROR;
-      this.snackbarMessage = res.message;
-      this.snackbar = true;
-      return;
-    }
+    this.snackbarType = type;
+    this.snackbarMessage = message;
+    this.snackbar = show;
 
-    this.snackbarType = EResponseType.SUCCESS;
-    this.snackbarMessage = res.message;
-    this.snackbar = true;
-    router.push("/");
+    if (type === EResponseType.SUCCESS) {
+      router.push("/");
+    }
   }
 
   public reset() {
     this.login = "";
     this.password = "";
+
+    this.snackbarType = EResponseType.SUCCESS;
+    this.snackbarMessage = "Успешно сброшено";
+    this.snackbar = true;
   }
 }

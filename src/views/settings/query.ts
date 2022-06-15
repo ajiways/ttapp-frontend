@@ -1,4 +1,6 @@
+import { AxiosError } from "axios";
 import { $api } from "../../api";
+import { EResponseType } from "../../common/enums";
 import { groupListQuery } from "../schedule/query";
 import { GroupSchedule, LessonInterface } from "../schedule/types";
 
@@ -63,9 +65,27 @@ export const updateDayLessons = async (
       await $api.delete("/lesson", { data: { id } });
     }
 
-    return updatedLessons;
-  } catch (error) {
-    return error as Error;
+    return {
+      type: EResponseType.SUCCESS,
+      message: "Расписание успешно обновлено",
+      updatedLessons,
+    };
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      if (e.response && e.response.status === 400) {
+        return {
+          type: EResponseType.ERROR,
+          message: "Ошибка при обновлении расписания, попробуйте позже",
+        };
+      }
+
+      if (e.response && e.response.status === 500) {
+        return {
+          type: EResponseType.ERROR,
+          message: "Произошла непредвиенная ошибка, попробуйте позже",
+        };
+      }
+    }
   }
 };
 
@@ -92,9 +112,26 @@ export const saveNewGroup = async (
 
     await groupListQuery();
 
-    return true;
-  } catch (error) {
-    return error as Error;
+    return {
+      type: EResponseType.SUCCESS,
+      message: `Группа ${title} успешно добавлена в систему`,
+    };
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      if (e.response && e.response.status === 400) {
+        return {
+          type: EResponseType.ERROR,
+          message: "Ошибка при создании группы, попробуйте позже",
+        };
+      }
+
+      if (e.response && e.response.status === 500) {
+        return {
+          type: EResponseType.ERROR,
+          message: "Произошла непредвиенная ошибка, попробуйте позже",
+        };
+      }
+    }
   }
 };
 
@@ -103,25 +140,59 @@ export const updateSelfPassword = async (
   newPassword: string
 ) => {
   try {
-    const res = await $api.post<boolean>("/user/self/password", {
+    await $api.post<boolean>("/user/self/password", {
       oldPassword,
       newPassword,
     });
 
-    return res.data;
+    return {
+      type: EResponseType.SUCCESS,
+      message: `Пароль успешно обновлен`,
+    };
   } catch (e) {
-    return e as Error;
+    if (e instanceof AxiosError) {
+      if (e.response && e.response.status === 400) {
+        return {
+          type: EResponseType.ERROR,
+          message: "Неправильный пароль",
+        };
+      }
+
+      if (e.response && e.response.status === 500) {
+        return {
+          type: EResponseType.ERROR,
+          message: "Произошла непредвиенная ошибка, попробуйте позже",
+        };
+      }
+    }
   }
 };
 
 export const updateSelfGroup = async (newGroupId: string) => {
   try {
-    const res = await $api.post<boolean>("/user/self/group", {
+    await $api.post<boolean>("/user/self/group", {
       id: newGroupId,
     });
 
-    return res.data;
-  } catch (error) {
-    return error as Error;
+    return {
+      type: EResponseType.SUCCESS,
+      message: `Группа успешно изменена`,
+    };
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      if (e.response && e.response.status === 400) {
+        return {
+          type: EResponseType.ERROR,
+          message: "При смене группы произошла ошибка, попробуйте позже",
+        };
+      }
+
+      if (e.response && e.response.status === 500) {
+        return {
+          type: EResponseType.ERROR,
+          message: "Произошла непредвиенная ошибка, попробуйте позже",
+        };
+      }
+    }
   }
 };
