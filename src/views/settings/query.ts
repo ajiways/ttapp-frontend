@@ -113,3 +113,15 @@ export const updateSelfPassword = async (
     return e as Error;
   }
 };
+
+export const updateSelfGroup = async (newGroupId: string) => {
+  try {
+    const res = await $api.post<boolean>("/user/self/group", {
+      id: newGroupId,
+    });
+
+    return res.data;
+  } catch (error) {
+    return error as Error;
+  }
+};
