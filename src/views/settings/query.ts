@@ -97,3 +97,19 @@ export const saveNewGroup = async (
     return error as Error;
   }
 };
+
+export const updateSelfPassword = async (
+  oldPassword: string,
+  newPassword: string
+) => {
+  try {
+    const res = await $api.post<boolean>("/user/self/password", {
+      oldPassword,
+      newPassword,
+    });
+
+    return res.data;
+  } catch (e) {
+    return e as Error;
+  }
+};

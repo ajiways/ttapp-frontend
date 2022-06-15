@@ -15,7 +15,12 @@ import {
   TWeekListItem,
   WeekSchedule,
 } from "../schedule/types";
-import { getGroupSchedule, saveNewGroup, updateDayLessons } from "./query";
+import {
+  getGroupSchedule,
+  saveNewGroup,
+  updateDayLessons,
+  updateSelfPassword,
+} from "./query";
 
 let password: string;
 
@@ -58,12 +63,12 @@ export default class SettingsView extends Vue {
     return roles.map((role) => role.title);
   }
 
-  public saveUpdatedUserData() {
+  public async saveUpdatedUserData() {
     if (!this.$refs.userDataForm.validate()) {
       return;
     }
 
-    console.log("save");
+    await updateSelfPassword(this.oldPassword, this.newPassword);
   }
 
   public resetUserDataForm() {
