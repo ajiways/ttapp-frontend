@@ -52,3 +52,17 @@
 .v-sheet.v-card:not(.v-sheet--outlined) {
   box-shadow: none !important;
 }
+
+@media(max-width: 420px) {
+  .v-window__prev {
+    display: none;
+  }
+
+  .v-window__next {
+    display: none;
+  }
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
