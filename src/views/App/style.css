@@ -1,0 +1,29 @@
+@media(max-width: 520px) {
+  .v-icon {
+    display: none !important;
+  }
+
+  .v-icon::after {
+    display: none !important;
+  }
+
+  .v-icon::before {
+    display: none !important;
+  }
+
+  .v-input--switch {
+    display: none !important;
+  }
+  
+  .v-toolbar__content {
+    margin-left: 28px;
+  }
+
+  .v-tab {
+    font-size: 12px !important;
+  }
+
+  .v-btn{
+    font-size: 10px !important;
+  }
+}

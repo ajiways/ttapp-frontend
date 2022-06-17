@@ -42,3 +42,4 @@
 </template>
 
 <script src="./App.view.ts" />
+<style src="./style.css" />
