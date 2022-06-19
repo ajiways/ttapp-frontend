@@ -1,5 +1,7 @@
 # ttapp-frontend
 
+App url: https://v2.timetable-app.ru/
+
 ## Project setup
 ```
 npm install
