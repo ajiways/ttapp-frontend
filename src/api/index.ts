@@ -2,7 +2,7 @@ import axios from "axios";
 import { AuthResponse } from "../views/login/types";
 
 export const $api = axios.create({
-  baseURL: "http://localhost:3052",
+  baseURL: process.env.VUE_APP_BASE_URL || "http://localhost:3052",
   withCredentials: true,
 });
 
